@@ -113,8 +113,8 @@ std::ostream &operator<<(std::ostream &os, const OrderBook::BidAsk &ba) {
 }
 
 // Calculates the spread from the order book
-std::experimental::optional<int> OrderBook::BidAsk::spread() const {
-    std::experimental::optional<int> result;
+std::optional<int> OrderBook::BidAsk::spread() const {
+    std::optional<int> result;
     // If there are bids & asks, then calculate the spread
     if (bid && ask)
         result = ask.value().first - bid.value().first;

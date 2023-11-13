@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <map>
 #include <ostream>
-#include <experimental/optional>
+#include <optional>
 
 class OrderBook
 {
@@ -23,9 +23,9 @@ class OrderBook
 public:
 
     struct BidAsk{
-         typedef std::experimental::optional<std::pair<int,int>> Entry;
+         typedef std::optional<std::pair<int,int>> Entry;
          Entry bid, ask;
-         std::experimental::optional<int> spread() const;
+         std::optional<int> spread() const;
     };
  
     bool is_empty() const;

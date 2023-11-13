@@ -1,24 +1,24 @@
 #include <gtest/gtest.h>
 #include <OrderBook.hpp>
-TEST(OrderBookTets, OrderBookEmptyByDefault)
+TEST(OrderBookTests, OrderBookEmptyByDefault)
 {
     OrderBook book;
     EXPECT_TRUE(book.is_empty());
 }
 
-TEST(OrderBookTets, OrderAddition)
+TEST(OrderBookTests, OrderAddition)
 {
     OrderBook book;
     book.add_bid(123,700);
     auto bidask = book.get_bid_ask();
-    EXPECT_TRUE(bidask.bid);
+    EXPECT_TRUE(bidask.bid.has_value());
     auto bid = bidask.bid.value();
     EXPECT_EQ(123, bid.first);
     EXPECT_EQ(700,bid.second);
 }
 
 // also test removal for price levels which don't exist yet
-TEST(OrderBookTets, OrderRemoval)
+TEST(OrderBookTests, OrderRemoval)
 {
     OrderBook book;
     book.add_bid(123,700);
@@ -28,8 +28,8 @@ TEST(OrderBookTets, OrderRemoval)
     book.remove_bid(123,600);
     auto bidask = book.get_bid_ask();
 
-    EXPECT_TRUE(bidask.bid);
-    EXPECT_TRUE(bidask.ask);
+    EXPECT_TRUE(bidask.bid.has_value());
+    EXPECT_TRUE(bidask.ask.has_value());
 
     // Get the bid and ask from the Order Book (they are optional)
     auto bid = bidask.bid.value();
@@ -43,7 +43,7 @@ TEST(OrderBookTets, OrderRemoval)
 }
 
 // also test removal for price levels which don't exist yet
-TEST(OrderBookTets, CalculateSpread)
+TEST(OrderBookTests, CalculateSpread)
 {
     OrderBook book;
     book.add_bid(123,700);
@@ -51,6 +51,14 @@ TEST(OrderBookTets, CalculateSpread)
 
     auto diff = book.get_bid_ask().spread();
 
-    EXPECT_TRUE(diff);
+    EXPECT_TRUE(diff.has_value());
     EXPECT_EQ(1, diff);
+}
+
+// Tests that we can't calculate the spread if we don't have a bid/ask already
+TEST(OrderBookTests, CalculateSpreadInvalid)
+{
+    OrderBook book;
+    auto diff = book.get_bid_ask().spread();
+    EXPECT_FALSE(diff.has_value());
 }
