@@ -1,6 +1,6 @@
 project (OrderBook)
 message("In orderbook subdirectory")
-add_definitions(-std=c++14)
+add_definitions(-std=c++17)
 
 set(HEADER_FILES OrderBook.hpp)
 set(SOURCE_FILES OrderBook.cpp)
