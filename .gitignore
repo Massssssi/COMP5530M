@@ -2,6 +2,7 @@
 /buildXCode/
 .DS_Store
 DataRetreiver/__pycache__/
+__pycache__/
 prime_orderbook.db
 *.swp
 *.vscode
