@@ -22,12 +22,14 @@ class DataReader:
                 csv_reader = csv.reader(file)
                 rows = list(csv_reader)
                 rows = [[row[2], row[3]] for row in rows]
-                self.data = np.array(
+                rows = np.array(
                     [
                         rows[i : i + self.rows_per_orderbook]
                         for i in range(0, len(rows), self.rows_per_orderbook)
                     ]
                 )
+                rows = np.expand_dims(rows, axis=3)
+                self.data = rows
         except FileNotFoundError:
             print(f"File not found: {self.file_path}")
         except Exception as e:
