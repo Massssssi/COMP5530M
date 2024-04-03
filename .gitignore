@@ -3,6 +3,7 @@ cpp codebase/buildXCode/
 cpp codebase/buildXcode/
 .DS_Store
 DataRetreiver/__pycache__/
+GANs/__pycache__/
 prime_orderbook.db
 *.swp
 *.vscode
