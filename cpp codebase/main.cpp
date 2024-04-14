@@ -37,10 +37,9 @@ void startServerWrapper(DBHandler &handler) { API::startServer(globalOrderBook, 
 int main(int argc, char *argv[]) {
     std::signal(SIGINT, signal_handler);
     QApplication app(argc, argv);
-    
-    std::string logo = getProjectSourceDirectory() + "/resources/UoLSE_Logo.png";
-    std::cout << logo <<std::endl;
-    QPixmap pixmap = QPixmap(logo.c_str());
+
+    std::string logo = getProjectSourceDirectory() +"/resources/UoLSE_Logo.png";
+    QPixmap pixmap = QPixmap(logo.c_str()); // Declare the QPixmap variable outside the if-else structure to ensure its scope covers the entire function
 
     QSplashScreen splash(pixmap);
     splash.show();
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]) {
 
     CentralWidget centralWidget(&handler, &globalOrderBook);
     splash.finish(&centralWidget); // Close the splash screen
-    
+
     // Ensures the screen is filled
     centralWidget.showMaximized();
 

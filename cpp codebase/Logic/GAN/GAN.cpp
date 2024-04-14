@@ -7,6 +7,8 @@
 bool Gan::flag = false;
 std::thread Gan::startGenerate;
 std::atomic<bool> Gan::cancelRequested(false);
+std::random_device rd1;
+std::default_random_engine e1(rd1());
 
 void Gan::updateOrderBook(float *values, OrderBook *globalOrderBook) {
   for (int i = 6; i > 0; i--) {
@@ -32,14 +34,25 @@ void getNextCentre(float *values, torch::Tensor &output, OrderBook *globalOrderB
 
   float temp[12];
 
-  if (output.dim() != 2){
+  if (output.dim() != 2) {
     std::cerr << "Tensor is not 2D. It has " << output.dim() << " dimensions." << std::endl;
     return;
   }
 
   for (int64_t j = 0; j < output.size(1); ++j) {
     temp[j] = output[0][j].item<float>();
-    if (temp[j] < 0) balance++;
+  }
+
+  int random = e1();
+  if (random % 2 == 1) {
+    std::reverse(temp, temp + 12);
+    for (int i = 0; i < 12; i++) {
+      temp[i] *= -1;
+    }
+  }
+
+  for (int i = 0; i < 12; i++) {
+    if (temp[i] < 0) balance++;
   }
 
   // do balance - 6 to calculate the next best bid for the centre of the OB
@@ -54,16 +67,16 @@ void getNextCentre(float *values, torch::Tensor &output, OrderBook *globalOrderB
       break;
     }
   }
+
 }
 
-void Gan::startServer(DBHandler *handler, OrderBook *globalOrderBook){
+void Gan::startServer(DBHandler *handler, OrderBook *globalOrderBook) {
   cancelRequested = false;
   startGenerate = std::thread(generateQuantity, handler, globalOrderBook);
   std::cout << "Starting thread!\n";
 }
 
 void Gan::generateQuantity(DBHandler *handler, OrderBook *globalOrderBook) {
-  std::cout << "In Generate Quantity\n";
   try {
     std::string model_path = getProjectSourceDirectory() + "/RecreatingBestModelCPU.pt";
     torch::jit::script::Module model = torch::jit::load(model_path);

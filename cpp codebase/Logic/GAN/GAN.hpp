@@ -11,6 +11,7 @@
 #include <filesystem>
 #include <cstdio>
 #include <iostream>
+#include <algorithm>
 
 class Gan {
  private:

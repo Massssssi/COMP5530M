@@ -104,10 +104,6 @@ void HeaderWidget::setupNewsTicker() {
     newsTimer->start(3000);
 }
 
-
-
-
-
 void HeaderWidget::updateNewsTicker() {
     currentNewsIndex = (currentNewsIndex + 1) % newsItems.size();
     newsTicker->setText(newsItems.at(currentNewsIndex));
