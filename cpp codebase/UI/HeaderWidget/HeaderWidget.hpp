@@ -23,7 +23,6 @@
 #include <QTimer>
 #include <QStringList>
 
-
 class HeaderWidget : public QWidget {
     Q_OBJECT
 
