@@ -13,7 +13,7 @@ class API {
 private:
     static httplib::Server s;
     static std::map< int, std::map<std::string, double> > orderHistory;
-    static int price;
+    static float price;
     static float balance;
     static float pnl;
     static float quantity;
@@ -25,8 +25,8 @@ public:
     static void startServer(OrderBook &o, DBHandler &handler);
     static void getPnL(OrderBook &o, DBHandler &handler);
     static void updatePnL();
-    static void setPrice(int p);
-    static int getPrice();
+    static void setPrice(float p);
+    static float getPrice();
     static float getBalance();
     static float getQuantity();
     static float getPnl();

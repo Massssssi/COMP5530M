@@ -22,14 +22,14 @@ httplib::Server API::s;
 std::random_device rd;
 std::default_random_engine e(rd());
 std::map<int, std::map<std::string, double> > API::orderHistory;
-int API::price = 2500;
+float API::price = 2500;
 float API::balance = 1000000.00;
 float API::quantity = 0.00;
 float API::pnl = 0.00;
 
-void API::setPrice(int p) { price = p; }
+void API::setPrice(float p) { price = p; }
 
-int API::getPrice() { return price; }
+float API::getPrice() { return price; }
 
 float API::getPnl()  {
   updatePnL();

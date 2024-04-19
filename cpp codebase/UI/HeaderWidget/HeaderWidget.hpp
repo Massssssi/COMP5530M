@@ -19,7 +19,7 @@
 #include <thread>
 #include <chrono>
 #include "GAN.hpp"
-
+#include "ABM.hpp"
 #include <QTimer>
 #include <QStringList>
 

@@ -73,7 +73,6 @@ void getNextCentre(float *values, torch::Tensor &output, OrderBook *globalOrderB
 void Gan::startServer(DBHandler *handler, OrderBook *globalOrderBook) {
   cancelRequested = false;
   startGenerate = std::thread(generateQuantity, handler, globalOrderBook);
-  std::cout << "Starting thread!\n";
 }
 
 void Gan::generateQuantity(DBHandler *handler, OrderBook *globalOrderBook) {
