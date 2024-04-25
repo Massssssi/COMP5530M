@@ -2,6 +2,7 @@
 #include <QFont>
 #include <QPixmap>
 #include <QDir>
+#include <QFontDatabase>
 
 HeaderWidget::HeaderWidget(DBHandler *handler, OrderBook *orderBook, QWidget *parent)
     : QWidget(parent), handler(handler), orderBook(orderBook) {
@@ -39,8 +40,16 @@ void HeaderWidget::initialiseLayoutAndAddButtons() {
 }
 
 void HeaderWidget::setupLogoAndCompany() {
-    QFont titleFont("Roboto", 18, QFont::Bold);
-    titleLabel = new QLabel(" UNIVERSITY OF LEEDS STOCK EXCHANGE ");
+
+    if (QDir::currentPath().contains("Debug")) {
+        int id = QFontDatabase::addApplicationFont("../../resources/Nexa-Heavy.ttf");
+    } else {
+        int id = QFontDatabase::addApplicationFont("COMP5530M/cpp codebase/resources/Nexa-Heavy.ttf");
+    }
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont titleFont(family, 18);
+    //QFont titleFont("Helvetica", 24, QFont::Bold);
+    titleLabel = new QLabel("University of Leeds Stock Exchange");
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setStyleSheet("QLabel { color : white; }");
@@ -60,7 +69,15 @@ void HeaderWidget::setupLogoAndCompany() {
 }
 
 void HeaderWidget::setupButtons() {
-    QFont buttonFont("Arial", 10);
+    if (QDir::currentPath().contains("Debug")) {
+        int id = QFontDatabase::addApplicationFont("../../resources/TangoSans.ttf");
+    } else {
+        int id = QFontDatabase::addApplicationFont("COMP5530M/cpp codebase/resources/TangoSans.ttf");
+    }
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont buttonFont(family, 10);
+
+    // QFont buttonFont("Arial", 10);
     QString buttonStyle = "QPushButton { color: white; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #555555, stop: 1 #333333); border: 1px solid #555; border-radius: 10px; padding: 5px; min-width: 80px; min-height: 24px; } QPushButton:hover { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #666666, stop: 1 #444444); } QPushButton:pressed { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #555555, stop: 1 #222222); }";
     startSimulation = new QPushButton("Start Simulation");
     cancelSimulation = new QPushButton("Cancel Simulation");
@@ -72,10 +89,18 @@ void HeaderWidget::setupButtons() {
 }
 
 void HeaderWidget::setupModelType() {
+    if (QDir::currentPath().contains("Debug")) {
+        int id = QFontDatabase::addApplicationFont("../../resources/TangoSans.ttf");
+    } else {
+        int id = QFontDatabase::addApplicationFont("COMP5530M/cpp codebase/resources/TangoSans.ttf");
+    }
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont modelTypeFont(family, 10);
+
     modelType = new QComboBox(this);
     modelType->addItem("GAN Model");
     modelType->addItem("Pan's Model");
-    modelType->setFont(QFont("Arial", 10));
+    modelType->setFont(modelTypeFont);
     modelType->setStyleSheet("QComboBox { color: white; background-color: #444444; border-radius: 5px; padding: 3px; } QComboBox::drop-down { border: none; }");
 }
 
@@ -103,9 +128,6 @@ void HeaderWidget::setupNewsTicker() {
     connect(newsTimer, &QTimer::timeout, this, &HeaderWidget::updateNewsTicker);
     newsTimer->start(3000);
 }
-
-
-
 
 
 void HeaderWidget::updateNewsTicker() {
