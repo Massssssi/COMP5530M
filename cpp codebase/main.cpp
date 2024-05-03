@@ -1,10 +1,5 @@
-#include <torch/script.h>
-// IMPORTANT NOTE: PYTORCH HAS TO BE IN THE BEGINNING BEFORE ANY QT IMPORTS FOR THIS TO WORK
-
-#include <iostream>
 #include <filesystem>
 #include <thread>
-#include <future>
 #include <csignal>
 #include <string>
 #include "OrderBook.hpp"
@@ -15,11 +10,8 @@
 #include <QtCharts>
 #include <nlohmann/json.hpp>
 #include <httplib.h>
-#include <QApplication>
 #include <QSplashScreen>
-#include <QProgressBar>
 #include <QTimer>
-#include <QCoreApplication>
 
 OrderBook globalOrderBook;
 volatile std::sig_atomic_t gSignalStatus;
@@ -38,7 +30,8 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     std::string logo = getProjectSourceDirectory() +"/resources/UoLSE_Logo.png";
-    QPixmap pixmap = QPixmap(logo.c_str()); // Declare the QPixmap variable outside the if-else structure to ensure its scope covers the entire function
+    QPixmap pixmap = QPixmap(logo.c_str());
+    // Declare the QPixmap variable outside the if-else structure to ensure its scope covers the entire function
 
     QSplashScreen splash(pixmap);
     splash.show();
@@ -71,10 +64,7 @@ int main(int argc, char *argv[]) {
     CentralWidget centralWidget(&handler, &globalOrderBook);
     splash.finish(&centralWidget); // Close the splash screen
 
-    // Ensures the screen is filled
     centralWidget.showMaximized();
-
     int result = app.exec();
-
     return result;
 }

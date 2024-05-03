@@ -57,7 +57,7 @@ std::string Abm::getProjectSourceDirectory() {
 
 void Abm::startServer(DBHandler *handler, OrderBook *globalOrderBook) {
   cancelRequested = false;
-  readCsv(getProjectSourceDirectory()+"/abm_lob.csv");
+  if (csvData.empty()){ readCsv(getProjectSourceDirectory()+"/abm_lob.csv"); }
   startGenerate = std::thread(generateQuantity, handler, globalOrderBook);
   std::cout << "Starting thread!\n";
 }
@@ -68,7 +68,6 @@ void Abm::generateQuantity(DBHandler *handler, OrderBook *globalOrderBook) {
     globalOrderBook->clear_order_book();
 
     if (flag){
-      API::setPrice(csvData.at(counter).at(0));
       for (int i = 0; i < 10; i++){
         std::vector<double> current = csvData.at(counter+i);
         globalOrderBook->add_order(i+1, current.at(0), current.at(1), true);
@@ -84,11 +83,11 @@ void Abm::generateQuantity(DBHandler *handler, OrderBook *globalOrderBook) {
         globalOrderBook->add_order(i+11, current.at(2), current.at(3), false);
       }
       counter -=10;
-      API::setPrice(csvData.at(counter).at(0));
 
       if (counter == 0){ flag = true; }
     }
 
+    API::setPrice(csvData.at(counter).at(0));
     API::updatePnL();
     handler->emitSuccessfulUpdate();
     globalOrderBook->OB_mutex.unlock();

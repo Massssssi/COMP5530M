@@ -2,17 +2,16 @@
 #include <QFont>
 #include <QPixmap>
 #include <QDir>
+#include <QFontDatabase>
 
-HeaderWidget::HeaderWidget(DBHandler *handler, OrderBook *orderBook, QWidget *parent)
-    : QWidget(parent), handler(handler), orderBook(orderBook) {
-  initialiseLayoutAndAddButtons();
-  this->setStyleSheet("background-color: rgba(12, 83, 45, 90); border-radius: 20px;");
+HeaderWidget::HeaderWidget(DBHandler *handler, OrderBook *orderBook, QWidget *parent) :
+QWidget(parent), handler(handler), orderBook(orderBook) {
+    initialiseLayoutAndAddButtons();
+    this->setStyleSheet("background-color: rgba(12, 83, 45, 90); border-radius: 20px;");
 }
 
 HeaderWidget::~HeaderWidget() {
-  if (newsTimer) {
-    newsTimer->stop();
-  }
+  if (newsTimer) { newsTimer->stop(); }
 }
 
 void HeaderWidget::initialiseLayoutAndAddButtons() {
@@ -33,76 +32,101 @@ void HeaderWidget::initialiseLayoutAndAddButtons() {
   logoAndCompanyContainer->addStretch(1);
   logoAndCompanyContainer->addWidget(titleLabel);
   logoAndCompanyContainer->addStretch(1);
+  logoAndCompanyContainer->addWidget(newsTicker);
 
   container->addLayout(logoAndCompanyContainer);
   container->addLayout(buttonContainer);
 }
 
+std::string HeaderWidget::getProjectSourceDirectory() {
+  std::string currFilePath = __FILE__;
+  std::filesystem::path fullPath(currFilePath);
+  return fullPath.parent_path().parent_path().parent_path().string();
+}
+
 void HeaderWidget::setupLogoAndCompany() {
-  QFont titleFont("Roboto", 18, QFont::Bold);
-  titleLabel = new QLabel(" UNIVERSITY OF LEEDS STOCK EXCHANGE ");
+  std::string fontPath = getProjectSourceDirectory() +"/resources/Nexa-Heavy.ttf";
+  int id = QFontDatabase::addApplicationFont(fontPath.c_str());
+
+  QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+  QFont titleFont(family, 18);
+  // QFont titleFont("Helvetica", 24, QFont::Bold);
+  titleLabel = new QLabel("University of Leeds Stock Exchange");
   titleLabel->setFont(titleFont);
   titleLabel->setAlignment(Qt::AlignCenter);
   titleLabel->setStyleSheet("QLabel { color : white; }");
 
-  QPixmap imagePixmap;
-
-  // If running on Xcode, the directory is usually the Debug folder
-  if (QDir::currentPath().contains("Debug")) {
-    imagePixmap = QPixmap("../../resources/UoLSE_Logo.png");
-  } else {
-    imagePixmap = QPixmap("COMP5530M/cpp codebase/resources/UoLSE_Logo.png");
-  }
-
-//    QPixmap imagePixmap("COMP5530M/cpp codebase/resources/UoLSE_Logo.png");
+  std::string logoPath = getProjectSourceDirectory() +"/resources/UoLSE_Logo.png";
+  QPixmap imagePixmap = QPixmap(logoPath.c_str());
   imageLabel = new QLabel;
-  imageLabel->setPixmap(imagePixmap.scaled(150, 90, Qt::KeepAspectRatio));
+  imageLabel->setPixmap(imagePixmap.scaled(200, 200, Qt::KeepAspectRatio));
 }
 
 void HeaderWidget::setupButtons() {
-  QFont buttonFont("Arial", 10);
-  QString buttonStyle =
-      "QPushButton { color: white; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #555555, stop: 1 #333333); border: 1px solid #555; border-radius: 10px; padding: 5px; min-width: 80px; min-height: 24px; } QPushButton:hover { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #666666, stop: 1 #444444); } QPushButton:pressed { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #555555, stop: 1 #222222); }";
-  startSimulation = new QPushButton("Start Simulation");
-  cancelSimulation = new QPushButton("Cancel Simulation");
-  startSimulation->setFont(buttonFont);
-  cancelSimulation->setFont(buttonFont);
-  startSimulation->setStyleSheet(buttonStyle);
-  cancelSimulation->setStyleSheet(buttonStyle);
-  connectButtons();
+  std::string fontPath = getProjectSourceDirectory() +"/resources/TangoSans.ttf";
+  int id = QFontDatabase::addApplicationFont(fontPath.c_str());
+
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont buttonFont(family, 10);
+
+    QString buttonStyle = "QPushButton { color: white; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                          " stop: 0 #555555, stop: 1 #333333); border: 1px solid #555; border-radius: 10px; "
+                          "padding: 5px; min-width: 80px; min-height: 24px; } "
+                          "QPushButton:hover { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+                          "stop: 0 #666666, stop: 1 #444444); } QPushButton:pressed { background-color: "
+                          "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #555555, stop: 1 #222222); }";
+
+    startSimulation = new QPushButton("Start Simulation");
+    cancelSimulation = new QPushButton("Cancel Simulation");
+    startSimulation->setFont(buttonFont);
+    cancelSimulation->setFont(buttonFont);
+    startSimulation->setStyleSheet(buttonStyle);
+    cancelSimulation->setStyleSheet(buttonStyle);
+    connectButtons();
 }
 
 void HeaderWidget::setupModelType() {
-  modelType = new QComboBox(this);
-  modelType->addItem("GAN Model");
-  modelType->addItem("Pan's Model");
-  modelType->setFont(QFont("Arial", 10));
-  modelType->setStyleSheet(
-      "QComboBox { color: white; background-color: #444444; border-radius: 5px; padding: 3px; } QComboBox::drop-down { border: none; }");
+  std::string fontPath = getProjectSourceDirectory() +"/resources/TangoSans.ttf";
+  int id = QFontDatabase::addApplicationFont(fontPath.c_str());
+
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont modelTypeFont(family, 10);
+
+    modelType = new QComboBox(this);
+    modelType->addItem("GAN Model");
+    modelType->addItem("Agent Based Model");
+    modelType->setFont(modelTypeFont);
+    modelType->setStyleSheet("QComboBox { color: white; background-color: #444444; border-radius: 5px; padding: 3px; }"
+                             " QComboBox::drop-down { border: none; }");
 }
 
 void HeaderWidget::setupNewsTicker() {
-  int rightMargin = -800;  // Margin from the right edge
-  int widgetWidth = 320;  // Width of the newsTicker
-  int widgetHeight = 30;  // Height of the newsTicker
-  int yPos = 45;  // Vertical position from the top
+    int rightMargin = -800; // Margin from the right edge
+    int widgetWidth = 320;  // Width of the newsTicker
+    int widgetHeight = 30;  // Height of the newsTicker
+    int yPos = 45;          // Vertical position from the top
 
   newsTicker = new QLabel(this);
   // Set background color, text color, and round corners directly on the newsTicker
   newsTicker->setStyleSheet(
-      "QLabel { color: white; font-size: 10pt; background-color: rgba(12, 83, 45, 90); border-radius: 10px; padding: 5px; }");
+      "QLabel { color: white; font-size: 10pt; background-color: rgba(12, 83, 45, 90); "
+      "border-radius: 10px; padding: 5px; }");
 
   // Calculate x-position from the right edge
   int xPos = this->width() - widgetWidth - rightMargin;
 
-  // Set geometry with the calculated x-position
-  newsTicker->setGeometry(QRect(xPos, yPos, widgetWidth, widgetHeight));
+    // Set geometry with the calculated x-position
+    newsTicker->setGeometry(QRect(xPos, yPos, widgetWidth, widgetHeight));
 
-  newsItems << "Bitcoin hits new all-time high!" << "Major exchange suffers breach, Bitcoin safe."
-            << "Bitcoin suffers major bear run" << "Global regulators propose new rules for Bitcoin transactions."
-            << "Tech giants plan to integrate Bitcoin for payments."
-            << "Environmental concerns rise over Bitcoin mining energy use.";
-  newsTicker->setText(newsItems.first());
+    newsItems << "Ranaex Exchange Unveils RNAC: A Pioneering Leap in Cryptocurrency"
+              << "Lessons From The FTX Trial: Regulating CEXs May Not Be Enough To Prevent Bad Actors | CryptoInfoNet"
+              << "Potential Shiba Inu Rally as Selling Slows, Uniswap & AI Altcoin Strengthen Position"
+              << "Global regulators propose new rules for Bitcoin transactions."
+              << "FIU Notifies Fresh Money Laundering, Terror Financing Reporting Alerts For Capital Markets"
+              << "Greenhaven Road Capital Main Fund Q1 2024 Investor Letter"
+              << "Digging into Decentralised Exchanges: Benefits and Challenges"
+              << "Institutional Crypto Investors Choose ETFSwap (ETFS) As The Better Alternative To Binance And ByBit";
+    newsTicker->setText(newsItems.first());
 
   newsTimer = new QTimer(this);
   connect(newsTimer, &QTimer::timeout, this, &HeaderWidget::updateNewsTicker);
@@ -113,7 +137,6 @@ void HeaderWidget::updateNewsTicker() {
   currentNewsIndex = (currentNewsIndex + 1) % newsItems.size();
   newsTicker->setText(newsItems.at(currentNewsIndex));
   newsTicker->setAlignment(Qt::AlignCenter);
-
 }
 
 void HeaderWidget::connectButtons() {

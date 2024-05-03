@@ -15,11 +15,12 @@ OrderBookWidget::OrderBookWidget(DBHandler *handler, OrderBook *orderBookParam) 
 
   this->setLayout(mainLayout);
   setupSignalsSlots(handler);
-    // Apply a metallic silver background to the entire widget
-    this->setStyleSheet("background-color: rgba(48, 58, 46, 30);"); // Adjust the RGBA values for desired transparency and shade
+  // Apply a metallic silver background to the entire widget
+  this->setStyleSheet("background-color: rgba(48, 58, 46, 30);");
+  // Adjust the RGBA values for desired transparency and shade
 }
 
-void OrderBookWidget::addToLayout(){
+void OrderBookWidget::addToLayout() {
   mainLayout->addWidget(asksLabel);
   mainLayout->addWidget(asksTableWidget);
   mainLayout->addWidget(bidsLabel);
@@ -44,13 +45,12 @@ void OrderBookWidget::addToLayout(){
   mainLayout->addWidget(apiResponse);
 }
 
-void OrderBookWidget::setupObjects(){
+void OrderBookWidget::setupObjects() {
   mainLayout = new QVBoxLayout;
   quantityLayout = new QHBoxLayout;
   priceLayout = new QHBoxLayout;
   QString whiteTextStyle = "color: white;";
   QString baseFontStyle = "color: white; font-family: 'Orbitron', sans-serif; font-size: 12pt;";
-
 
   bidsLabel = new QLabel;
   asksLabel = new QLabel;
@@ -73,7 +73,7 @@ void OrderBookWidget::setupObjects(){
   selectPrice->setGeometry(QRect(QPoint(100, 100), QSize(200, 50)));
 
   QString buttonStyle = "QPushButton { " + baseFontStyle + "background-color: #333; border: 1px solid #555; }"
-                          "QPushButton:hover { background-color: #555; }";
+                                                           "QPushButton:hover { background-color: #555; }";
 
   selectAllQuantity = new QPushButton("Max Quantity", this);
   selectAllQuantity->setGeometry(QRect(QPoint(100, 100), QSize(200, 50)));
@@ -105,9 +105,7 @@ void OrderBookWidget::setupObjects(){
   apiResponse->setStyleSheet(baseFontStyle);
 
   QString comboBoxStyle = "QComboBox { " + baseFontStyle + "background-color: #333; border: 1px solid #555; }"
-                          "QComboBox::drop-down { border-left: 1px solid #555; }";
-
-//    QString comboBoxStyle = "QComboBox { " + baseFontStyle + "background-color: #333; border: 1px solid #555; }";
+                                                           "QComboBox::drop-down { border-left: 1px solid #555; }";
 
   orderType = new QComboBox(this);
   orderType->addItem("Immediate or Cancel (IOC)");
@@ -138,8 +136,7 @@ void OrderBookWidget::setupObjects(){
   quantity->setStyleSheet("QLineEdit { color: white; }");
 }
 
-
-void OrderBookWidget::setupSignalsSlots(DBHandler *handler){
+void OrderBookWidget::setupSignalsSlots(DBHandler *handler) {
   connect(apiButton, &QPushButton::clicked, this, &OrderBookWidget::invokeAPI);
   connect(handler, &DBHandler::orderBookUpdated, this, &OrderBookWidget::updateBothTables);
   connect(handler, &DBHandler::orderBookUpdated, this, &OrderBookWidget::updateBalance);
@@ -155,20 +152,17 @@ void OrderBookWidget::initializeTable(QTableWidget *tableWidget, const QStringLi
   tableWidget->setColumnCount(headers.size());
   tableWidget->setHorizontalHeaderLabels(headers);
   tableWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//  tableWidget->setFixedWidth(300);
   tableWidget->setFixedHeight(118);
 
-    
   tableWidget->horizontalHeader()->setStretchLastSection(true);
   tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    // Updated font style
-    QString futuristicFontStyle = "QTableWidget { font-family: 'Orbitron', sans-serif; font-size: 12pt; color: white; }"
-                                  "QHeaderView::section { font-family: 'Orbitron', sans-serif; font-size: 12pt; color: white; background-color: #1e1e1e; }";
-    tableWidget->setStyleSheet(futuristicFontStyle);
+  // Updated font style
+  QString futuristicFontStyle = "QTableWidget { font-family: 'Orbitron', sans-serif; font-size: 12pt; color: white; }"
+                                "QHeaderView::section { font-family: 'Orbitron', "
+                                "sans-serif; font-size: 12pt; color: white; background-color: #1e1e1e; }";
 
-//  // Applying white text style
-//  tableWidget->setStyleSheet("QHeaderView::section { color: black; } QTableWidget { color: black; }");
+  tableWidget->setStyleSheet(futuristicFontStyle);
 }
 
 void OrderBookWidget::invokeAPI() {
@@ -178,8 +172,11 @@ void OrderBookWidget::invokeAPI() {
   body["price"] = price->text().toFloat();
   body["quantity"] = quantity->text().toFloat();
 
-  if (orderType->currentText().toStdString() == "Immediate or Cancel (IOC)"){ body["orderType"] = "IOC"; } else {body["orderType"] = "FOK"; }
-  if (bidAsk->currentText().toStdString() == "Buy"){ body["bidAsk"] = true; } else {body["bidAsk"] = false; }
+  if (orderType->currentText().toStdString() == "Immediate or Cancel (IOC)") {
+    body["orderType"] = "IOC";
+  } else { body["orderType"] = "FOK"; }
+
+  if (bidAsk->currentText().toStdString() == "Buy") { body["bidAsk"] = true; } else { body["bidAsk"] = false; }
 
   auto res = cli.Post("/submit", body.dump(), "application/json");
 
@@ -266,12 +263,16 @@ void OrderBookWidget::addColoursToTables() {
   }
 }
 
-void OrderBookWidget::updateBalance() { currentBalance->setText("Current Balance = £" + QString::number(API::getBalance(), 'f', 2)); }
+void OrderBookWidget::updateBalance() {
+  currentBalance->setText("Current Balance = £" + QString::number(API::getBalance(), 'f', 2));
+}
 
-void OrderBookWidget::updateQuantity() { currentQuantity->setText("Current Quantity = " + QString::number(API::getQuantity(), 'f') + " ETH"); }
+void OrderBookWidget::updateQuantity() {
+  currentQuantity->setText("Current Quantity = " + QString::number(API::getQuantity(), 'f') + " ETH");
+}
 
 void OrderBookWidget::updatePnl() { pnl->setText("Total Position = £" + QString::number(API::getPnl(), 'f', 2)); }
 
-void OrderBookWidget::setQuantity() { quantity->setText(QString::number(API::getBalance()/API::getPrice(), 'f')); }
+void OrderBookWidget::setQuantity() { quantity->setText(QString::number(API::getBalance() / API::getPrice(), 'f')); }
 
 void OrderBookWidget::setPrice() { price->setText(QString::number(API::getPrice())); }

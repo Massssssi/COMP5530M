@@ -23,7 +23,6 @@
 #include <QTimer>
 #include <QStringList>
 
-
 class HeaderWidget : public QWidget {
     Q_OBJECT
 
@@ -49,8 +48,8 @@ private:
 public:
     HeaderWidget(DBHandler *handler, OrderBook *orderBook, QWidget *parent = nullptr);
     virtual ~HeaderWidget();
+    static std::string getProjectSourceDirectory();
 
-    
 public slots:
     void startSim();
     void cancelSim();

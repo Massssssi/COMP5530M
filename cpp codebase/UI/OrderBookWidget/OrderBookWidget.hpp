@@ -64,7 +64,6 @@ public:
     OrderBookWidget(DBHandler *handler, OrderBook *orderBook);
     ~OrderBookWidget();
 
-
 public slots:
     // Slot to update the table when the order book is updated
     void updateBothTables();
@@ -74,8 +73,6 @@ public slots:
     void updatePnl();
     void setQuantity();
     void setPrice();
-
-
 };
 
 #endif /* OrderBookWidget_hpp */
